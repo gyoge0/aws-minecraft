@@ -5,8 +5,8 @@ resource "aws_ecs_task_definition" "minecraft_server" {
   network_mode       = "awsvpc"
   cpu                = "1024"
   memory             = "2048"
-  execution_role_arn = aws_iam_role.ecs_task_execution.arn
-  task_role_arn      = aws_iam_role.ecs_task.arn
+  execution_role_arn = aws_iam_role.minecraft_ecs_execution.arn
+  task_role_arn      = aws_iam_role.minecraft_ecs_task.arn
 
   volume {
     name = "efs"
@@ -18,7 +18,7 @@ resource "aws_ecs_task_definition" "minecraft_server" {
 
   container_definitions = jsonencode([
     {
-      name : "minecraft-server",
+      name : "minecraft_server",
       image : "itzg/minecraft-server",
       essential : true,
       portMappings : [
@@ -56,7 +56,7 @@ resource "aws_ecs_task_definition" "minecraft_server" {
       logConfiguration : {
         logDriver : "awslogs",
         options : {
-          awslogs-group : "/minecraft-server",
+          awslogs-group : aws_cloudwatch_log_group.minecraft_server.name,
           awslogs-region : var.aws_region,
           awslogs-stream-prefix : "minecraft",
           awslogs-create-group : "true"
