@@ -16,51 +16,52 @@ resource "aws_ecs_task_definition" "minecraft_server" {
     }
   }
 
-  container_definitions = jsonencode({
-    "name" : "minecraft-server",
-    "image" : "itzg/minecraft-server",
-    "essential" : true,
-    "portMappings" : [
-      {
-        "containerPort" : 25565,
-        "hostPort" : 25565,
-        "protocol" : "tcp"
-      }
-    ],
-    "environment" : [
-      {
-        "name" : "EULA",
-        "value" : "TRUE"
-      },
-      {
-        "name" : "AUTO_STOP",
-        "value" : "TRUE"
-      },
-      {
-        "name" : "AUTO_STOP_TIMEOUT_EST",
-        "value" : "300"
-      },
-      {
-        "name" : "OVERRIDE_SERVER_PROPERTIES",
-        "value" : "true"
-      }
-    ],
-    "mountPoints" : [
-      {
-        "sourceVolume" : "efs",
-        "containerPath" : "/data",
-        "readOnly" : false
-      }
-    ],
-    "logConfiguration" : {
-      "logDriver" : "awslogs",
-      "options" : {
-        "awslogs-group" : "/ecs/minecraft-server",
-        "awslogs-region" : aws_region,
-        "awslogs-stream-prefix" : "minecraft",
-        "awslogs-create-group" : "true"
+  container_definitions = jsonencode([
+    {
+      name : "minecraft-server",
+      image : "itzg/minecraft-server",
+      essential : true,
+      portMappings : [
+        {
+          "containerPort" : 25565,
+          "hostPort" : 25565,
+          "protocol" : "tcp"
+        }
+      ],
+      environment : [
+        {
+          name : "EULA",
+          value : "TRUE"
+        },
+        {
+          name : "AUTO_STOP",
+          value : "TRUE"
+        },
+        {
+          name : "AUTO_STOP_TIMEOUT_EST",
+          value : "300"
+        },
+        {
+          name : "OVERRIDE_SERVER_PROPERTIES",
+          value : "true"
+        }
+      ],
+      mountPoints : [
+        {
+          sourceVolume : "efs",
+          containerPath : "/data",
+          readOnly : false
+        }
+      ],
+      logConfiguration : {
+        logDriver : "awslogs",
+        options : {
+          awslogs-group : "/minecraft-server",
+          awslogs-region : var.aws_region,
+          awslogs-stream-prefix : "minecraft",
+          awslogs-create-group : "true"
+        }
       }
     }
-  })
-  
+  ])
 }

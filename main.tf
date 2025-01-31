@@ -11,7 +11,9 @@ provider "aws" {
   region = var.aws_region
 
   default_tags {
-    managed_by        = "terraform"
-    terraform_project = "aws-minecraft"
+    tags = {
+      "managed_by"        = "terraform"
+      "terraform_project" = "aws-minecraft"
+    }
   }
 }
